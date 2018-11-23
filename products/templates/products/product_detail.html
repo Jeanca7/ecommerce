@@ -1,38 +1,56 @@
-{% extends "base.html" %}
-
-{% block content %}
-    <div class="container-fluid">
+{% extends "base.html" %} {% block content %}
+<div class="container-fluid">
     <div class="row">
-    
-    
-                    <div class="col-sm-4 col-lg-4 col-md-4">
-                        <div class="thumbnail">
-                            <img src="{{MEDIA_URL}}{{product.image}}" alt="">
-                            <div class="caption">
-                                <h4 class="pull-right">€{{product.price}}</h4>
-                                <h4>{{product.name}}
-                                
-                                </h4>
-                                <p>{{product.brand}}</p>
-                                <p>{{product.sku}}</p>
-                                <p>{{product.description}}</p>
-                                <p>{{product.stock}}</p>
-                                
-                                
-                                <form method="POST" action="{% url 'add_to_cart' %}">
-                                    <input type="number" name="quantity" value="1"/>
-                                    <input type="hidden" name="product" value="{{product.id}}">
-                                    <input class="btn btn-primary" type="submit" value="Add to cart"/>
-                                </form>
-                                
-                                
-                                <a href="{% url 'home' %}" class="btn btn-primary">back</a>
-                            </div>
-                        </div>
-                    </div>
-    
-    
+
+
+        <div class="col-sm-4 col-lg-4 col-md-4">
+            <div class="thumbnail">
+                <img src="{{MEDIA_URL}}{{product.image}}" alt="">
+                <div class="caption">
+                    <h4 class="pull-right">€{{product.price}}</h4>
+                    <h4>{{product.name}}
+
+                    </h4>
+                    <p>{{product.brand}}</p>
+                    <p>{{product.sku}}</p>
+                    <p>{{product.description}}</p>
+                    <p>{{product.stock}}</p>
+
+
+                    <form method="POST" action="{% url 'add_to_cart' %}">
+                        <input type="number" name="quantity" value="1" />
+                        <input type="hidden" name="product" value="{{product.id}}">
+                        <input class="btn btn-primary" type="submit" value="Add to cart" />
+                    </form>
+
+
+                    <a href="{% url 'home' %}" class="btn btn-primary">back</a>
+                </div>
+            </div>
+
+
+            <h2>Reviews</h2>
+            <hr> {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'write_reviews' product.id %}">
+                {% csrf_token %} {{ form.as_p }}
+
+                <input type="submit" value="Submit" />
+            </form>
+            {% endif %}
+            <hr>
+            <div>
+                {% for review in product.reviews.all|dictsortreversed:'created_date' %}
+
+
+                <h3>{{ review.title }} - <i>{{ review.author }}</i></h3>
+                <p>{{ review.content }}</p>
+                {{ review.product }}
+                <hr> {% endfor %}
+
+            </div>
+
+        </div>
     </div>
-    </div>
-    
+</div>
+
 {% endblock content %}
